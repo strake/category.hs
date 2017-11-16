@@ -1,6 +1,4 @@
 {-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE FlexibleContexts, FlexibleInstances #-}
 
 module Control.Categorical.Functor where
 
@@ -12,7 +10,6 @@ import Data.Functor.Identity
 import Data.Functor.Const
 import Data.Functor.Product
 import Data.Functor.Sum
-import Data.Morphism.Iso
 import Data.Proxy
 
 class (Category s, Category t) => Functor (s :: α -> α -> *) (t :: β -> β -> *) (f :: α -> β) where
@@ -93,9 +90,3 @@ instance Category s => Functor s (->) (s a) where
 
 instance Category s => Functor (Dual s) (NT (->)) s where
     map (Dual f) = NT (. f)
-
-instance Functor s t f => Functor (Iso s) t f where
-    map (Iso f _) = map f
-
-instance Functor s t f => Functor (Iso s) (Dual t) f where
-    map (Iso _ f') = Dual (map f')

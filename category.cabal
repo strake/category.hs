@@ -25,4 +25,7 @@ library
                      , LambdaCase
                      , PolyKinds
                      , ConstraintKinds
+                     , MultiParamTypeClasses
+                     , FlexibleContexts
+                     , FlexibleInstances
   ghc-options:         -Wall
