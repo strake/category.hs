@@ -28,4 +28,5 @@ library
                      , MultiParamTypeClasses
                      , FlexibleContexts
                      , FlexibleInstances
+                     , GeneralizedNewtypeDeriving
   ghc-options:         -Wall

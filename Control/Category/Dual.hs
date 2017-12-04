@@ -3,6 +3,7 @@ module Control.Category.Dual where
 import Control.Category.Groupoid
 
 newtype Dual k a b = Dual { dual :: k b a }
+  deriving (Semigroup, Monoid, Group)
 
 instance Category k => Category (Dual k) where
     id = Dual id
