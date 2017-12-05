@@ -13,6 +13,7 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:     Control.Categorical.Functor
+                     , Control.Category.Const2
                      , Control.Category.Dual
                      , Control.Category.Groupoid
                      , Data.Morphism.Endo
