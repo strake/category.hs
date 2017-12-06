@@ -30,7 +30,7 @@ instance Category s => Category (NT s) where
 instance Groupoid s => Groupoid (NT s) where
     invert (NT f) = NT (invert f)
 
-instance Base.Functor f => Functor (->) (->) f where map = Base.fmap
+instance {-# INCOHERENT #-} Base.Functor f => Functor (->) (->) f where map = Base.fmap
 
 instance Functor s (->) f => Functor (NT s) (NT (->)) (Compose f) where
     map (NT f) = NT (\ (Compose x) -> Compose (f <$> x))
