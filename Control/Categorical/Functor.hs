@@ -2,9 +2,11 @@
 
 module Control.Categorical.Functor where
 
+import qualified Data.Bifunctor as Base
+import qualified Data.Functor as Base
+
 import Control.Category.Dual
 import Control.Category.Groupoid
-import qualified Data.Functor as Base
 import Data.Functor.Compose
 import Data.Functor.Identity
 import Data.Functor.Const
@@ -31,6 +33,9 @@ instance Groupoid s => Groupoid (NT s) where
     invert (NT f) = NT (invert f)
 
 instance {-# INCOHERENT #-} Base.Functor f => Functor (->) (->) f where map = Base.fmap
+
+instance {-# INCOHERENT #-} Base.Bifunctor f => Functor (->) (NT (->)) f where
+    map f = NT (Base.bimap f id)
 
 instance Functor s (->) f => Functor (NT s) (NT (->)) (Compose f) where
     map (NT f) = NT (\ (Compose x) -> Compose (f <$> x))
