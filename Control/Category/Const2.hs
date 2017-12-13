@@ -3,6 +3,7 @@ module Control.Category.Const2 where
 import Algebra as A
 import Control.Category.Groupoid
 
+-- | Notes: 'Const2' '()' is the indiscrete category.
 newtype Const2 a b c = Const2 a
   deriving (Semigroup, Monoid, Group)
 

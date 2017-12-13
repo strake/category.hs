@@ -12,6 +12,12 @@ import Data.Functor.Product
 import Data.Functor.Sum
 import Data.Proxy
 
+-- | Laws:
+--
+-- @
+-- 'map' 'id' = 'id'
+-- 'map' (f '.' g) = 'map' f '.' 'map' g
+-- @
 class (Category s, Category t) => Functor (s :: α -> α -> *) (t :: β -> β -> *) (f :: α -> β) where
     map :: s a b -> t (f a) (f b)
 
