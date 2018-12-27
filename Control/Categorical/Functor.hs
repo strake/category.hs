@@ -12,10 +12,18 @@ import Data.Functor.Product
 import Data.Functor.Sum
 import Data.Proxy
 
+-- | Laws:
+--
+-- @
+-- 'map' 'id' = 'id'
+-- 'map' (f '.' g) = 'map' f '.' 'map' g
+-- @
 class (Category s, Category t) => Functor (s :: α -> α -> *) (t :: β -> β -> *) (f :: α -> β) where
     map :: s a b -> t (f a) (f b)
 
-type EndoFunctor s f = Functor s s f
+{-# DEPRECATED EndoFunctor "Use Endofunctor" #-}
+type EndoFunctor s = Functor s s
+type Endofunctor s = Functor s s
 
 infixl 4 <$>
 (<$>) :: Functor s (->) f => s a b -> f a -> f b

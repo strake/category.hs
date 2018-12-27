@@ -1,5 +1,5 @@
 name:                category
-version:             0.1.1.0
+version:             0.2.0.1
 synopsis:            Categorical types and classes
 -- description:         
 license:             BSD3
@@ -10,10 +10,13 @@ maintainer:          strake888@gmail.com
 category:            Control, Math
 build-type:          Simple
 cabal-version:       >=1.10
+bug-reports:         http://github.com/strake/category.hs/issues
+tested-with:         GHC ==8.2.2
 
 library
   exposed-modules:     Control.Categorical.Functor
                      , Control.Categorical.Monad
+                     , Control.Category.Const2
                      , Control.Category.Dual
                      , Control.Category.Groupoid
                      , Data.Morphism.Endo
@@ -30,4 +33,9 @@ library
                      , MultiParamTypeClasses
                      , FlexibleContexts
                      , FlexibleInstances
+                     , GeneralizedNewtypeDeriving
   ghc-options:         -Wall -Wno-name-shadowing
+
+source-repository head
+  type: git
+  location: http://github.com/strake/category.hs.git

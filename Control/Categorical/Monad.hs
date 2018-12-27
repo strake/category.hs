@@ -11,7 +11,7 @@ import Control.Categorical.Functor
 
 infixr 1 >=>, <=<, =>=, =<=
 
-class EndoFunctor s m => Monad s m where
+class Endofunctor s m => Monad s m where
     unit :: a `s` m a
 
     join :: m (m a) `s` m a
@@ -37,7 +37,7 @@ instance {-# INCOHERENT #-} Base.Monad m => Monad (->) m where
     join = Base.join
     bind = (Base.=<<)
 
-class EndoFunctor s ɯ => Comonad s ɯ where
+class Endofunctor s ɯ => Comonad s ɯ where
     counit :: ɯ a `s` a
 
     cut :: ɯ a `s` ɯ (ɯ a)

@@ -1,10 +1,23 @@
 module Data.Morphism.Iso where
 
+import qualified Algebra as A
 import Control.Categorical.Functor
 import Control.Category.Dual
 import Control.Category.Groupoid
 
 data Iso s a b = Iso (s a b) (s b a)
+
+instance (Semigroup (s a b), Semigroup (s b a)) => Semigroup (Iso s a b) where
+    Iso f f' <> Iso g g' = Iso (f <> g) (f' <> g')
+
+instance (Semigroup (s a b), Semigroup (s b a),
+          Monoid (s a b), Monoid (s b a)) => Monoid (Iso s a b) where
+    mappend = (<>)
+    mempty = Iso mempty mempty
+
+instance (Semigroup (s a b), Semigroup (s b a),
+          Group (s a b), Group (s b a)) => Group (Iso s a b) where
+    invert (Iso f f') = Iso (A.invert f) (A.invert f')
 
 instance Category s => Category (Iso s) where
     id = Iso id id
