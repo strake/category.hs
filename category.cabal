@@ -34,7 +34,15 @@ library
                      , FlexibleContexts
                      , FlexibleInstances
                      , GeneralizedNewtypeDeriving
-  ghc-options:         -Wall -Wno-name-shadowing
+  ghc-options:         -Wall -Wcompat -Wredundant-constraints -Wno-name-shadowing
+                       -Wincomplete-record-updates -Wincomplete-uni-patterns
+                       -Werror=incomplete-patterns
+                       -Werror=incomplete-uni-patterns
+                       -Werror=incomplete-record-updates
+                       -Werror=missing-fields
+                       -Werror=missing-methods
+                       -Wno-partial-type-signatures
+                       -Wno-simplifiable-class-constraints
 
 source-repository head
   type: git
