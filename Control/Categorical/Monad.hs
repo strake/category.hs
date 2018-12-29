@@ -8,6 +8,7 @@ import qualified Data.List.NonEmpty as NE
 import Data.Semigroup (Arg (..))
 
 import Control.Categorical.Functor
+import Control.Category.Dual
 
 infixr 1 >=>, <=<, =>=, =<=
 
@@ -79,3 +80,21 @@ instance Comonad (->) ((,) a) where
 instance Comonad (->) (Arg a) where
     counit (Arg _ b) = b
     cut (Arg a b) = Arg a (Arg a b)
+
+instance Functor s t m => Functor s (->) (Kleisli t m a) where
+    map f (Kleisli φ) = Kleisli (map f . φ)
+
+instance Category s => Functor s (->) (Cokleisli s ɯ a) where
+    map f (Cokleisli φ) = Cokleisli (f . φ)
+
+instance Category s => Functor (Dual s) (NT (->)) (Kleisli s m) where
+    map (Dual f) = NT (\ (Kleisli φ) -> Kleisli (φ . f))
+
+instance Functor s t ɯ => Functor (Dual s) (NT (->)) (Cokleisli t ɯ) where
+    map (Dual f) = NT (\ (Cokleisli φ) -> Cokleisli (φ . map f))
+
+instance Monad s m => Functor (Kleisli s m) s m where
+    map = bind . kleisli
+
+instance Comonad s ɯ => Functor (Cokleisli s ɯ) s ɯ where
+    map = cobind . cokleisli
