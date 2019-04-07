@@ -101,3 +101,9 @@ instance Category s => Functor (Dual s) (NT (->)) s where
 
 instance Functor s t f => Functor (Dual s) (Dual t) f where
     map (Dual f) = Dual (map f)
+
+instance (Category t, Functor s (NT t) f) => Functor (Dual s) (NT (Dual t)) f where
+    map (Dual f) = NT (Dual (nt (map f)))
+
+instance (Category s, Category t, Functor s (NT (Dual t)) f) => Functor s (Dual (NT t)) f where
+    map f = Dual (NT (dual (nt (map f))))
