@@ -4,6 +4,7 @@ module Control.Categorical.Functor where
 
 import Control.Category.Dual
 import Control.Category.Groupoid
+import Control.Monad.Trans.Identity (IdentityT (..))
 import qualified Data.Functor as Base
 import Data.Functor.Compose
 import Data.Functor.Identity
@@ -107,3 +108,8 @@ instance (Category t, Functor s (NT t) f) => Functor (Dual s) (NT (Dual t)) f wh
 
 instance (Category s, Category t, Functor s (NT (Dual t)) f) => Functor s (Dual (NT t)) f where
     map f = Dual (NT (dual (nt (map f))))
+
+instance Functor (NT (->)) (NT (->)) IdentityT where
+    map f = NT (\ (IdentityT x) -> IdentityT (nt f x))
+
+deriving instance Functor s (->) f => Functor s (->) (IdentityT f)
