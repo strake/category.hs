@@ -41,9 +41,10 @@ library
                      , MultiParamTypeClasses
                      , FlexibleContexts
                      , FlexibleInstances
-                     , DerivingStrategies
                      , StandaloneDeriving
-                     , GeneralizedNewtypeDeriving
+                     , DerivingStrategies
+                     , DerivingVia
+                     , Safe
   ghc-options:         -Wall -Wcompat -Wredundant-constraints -Wno-name-shadowing
                        -Wincomplete-record-updates -Wincomplete-uni-patterns
                        -Werror=incomplete-patterns

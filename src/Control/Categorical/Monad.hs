@@ -1,5 +1,8 @@
-module Control.Categorical.Monad where
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ExistentialQuantification #-}
+module Control.Categorical.Monad (Monad (..), (<=<), (>=>), Kleisli (..), Comonad (..), (=<=), (=>=), Cokleisli (..)) where
 
+import qualified Control.Applicative as Base
 import qualified Control.Monad as Base
 import Control.Monad.Trans.Identity (IdentityT (..))
 import Data.Function (($), flip)
@@ -7,6 +10,7 @@ import Data.Functor.Identity
 import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NE
 import Data.Semigroup (Arg (..))
+import qualified Data.Traversable as Base
 
 import Control.Categorical.Functor
 import Control.Category.Dual
@@ -38,6 +42,14 @@ instance {-# INCOHERENT #-} Base.Monad m => Monad (->) m where
     unit = Base.return
     join = Base.join
     bind = (Base.=<<)
+
+instance Comonad s f => Monad (Dual s) f where
+    unit = Dual counit
+    join = Dual cut
+
+instance (Category s, Comonad (NT s) f) => Monad (NT (Dual s)) f where
+    unit = NT (Dual (nt counit))
+    join = NT (Dual (nt cut))
 
 class Endofunctor s ɯ => Comonad s ɯ where
     counit :: ɯ a `s` a
@@ -100,8 +112,19 @@ instance Monad s m => Functor (Kleisli s m) s m where
 instance Comonad s ɯ => Functor (Cokleisli s ɯ) s ɯ where
     map = cobind . cokleisli
 
+instance {-# OVERLAPPABLE #-} (Base.Traversable f, Monad (->) m) => Functor (Kleisli (->) m) (Kleisli (->) m) f where
+    map (Kleisli f) = Kleisli (unBaseMonad . Base.traverse (BaseMonad . f))
+
+data BaseMonad m a = Monad (->) m => BaseMonad { unBaseMonad :: m a }
+instance Base.Functor (BaseMonad f) where fmap = map
+instance Base.Applicative (BaseMonad m) where pure = unit; (<*>) = Base.ap
+instance Base.Monad (BaseMonad m) where (>>=) = flip bind
+
 instance Monad (->) m => Functor (NT (Kleisli (->) m)) (NT (Kleisli (->) m)) IdentityT where
     map f = NT (Kleisli (map IdentityT . kleisli (nt f) . runIdentityT))
+
+instance Monad (Dual (->)) m => Functor (NT (Kleisli (Dual (->)) m)) (NT (Kleisli (Dual (->)) m)) IdentityT where
+    map f = NT (Kleisli (Dual (IdentityT . dual (kleisli (nt f)) . dual (map (Dual runIdentityT)))))
 
 instance Comonad (->) ɯ => Functor (NT (Cokleisli (->) ɯ)) (NT (Cokleisli (->) ɯ)) IdentityT where
     map f = NT (Cokleisli (IdentityT . cokleisli (nt f) . map runIdentityT))
@@ -145,3 +168,9 @@ instance (Functor s (Kleisli (->) m) f, Endofunctor (->) m) =>
 instance (Functor s (Cokleisli (->) ɯ) f, Endofunctor (->) ɯ) =>
          Functor s (Cokleisli (->) ɯ) (IdentityT f) where
     map f = Cokleisli (IdentityT . cokleisli (map f) . map runIdentityT)
+
+instance (Monad (->) m) => Functor (Kleisli (->) m) (Kleisli (->) m) ((,) a) where
+    map (Kleisli f) = Kleisli (\ (a, b) -> (,) a <$> f b)
+
+instance (Monad (->) m) => Functor (Kleisli (->) m) (NT (Kleisli (->) m)) (,) where
+    map (Kleisli f) = NT (Kleisli (\ (a, b) -> (\ a -> (a, b)) <$> f a))

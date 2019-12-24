@@ -112,4 +112,8 @@ instance (Category s, Category t, Functor s (NT (Dual t)) f) => Functor s (Dual 
 instance Functor (NT (->)) (NT (->)) IdentityT where
     map f = NT (\ (IdentityT x) -> IdentityT (nt f x))
 
-deriving instance Functor s (->) f => Functor s (->) (IdentityT f)
+instance Functor s (->) f => Functor s (->) (IdentityT f) where
+    map f = IdentityT . map f . runIdentityT
+
+instance (Category s, Category t, Functor (NT s) (NT t) f) => Functor (NT (Dual s)) (NT (Dual t)) f where
+    map f = NT (Dual (nt (map (NT (dual (nt f))))))
